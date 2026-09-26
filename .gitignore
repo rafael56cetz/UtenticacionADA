@@ -1,0 +1,48 @@
+# Configuración local y credenciales
+.env
+.env.*
+!.env.example
+auth.json
+config/*.local.php
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+
+# Datos privados, muestras y copias de bases
+/storage/
+/samples/
+/backups/
+*.dump
+*.sql.gz
+*.sqlite
+*.sqlite3
+*.log
+
+# Dependencias y modelos descargables
+/vendor/
+node_modules/
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+/biometric-service/models/
+*.onnx
+*.pt
+*.pth
+*.ckpt
+
+# Herramientas locales y archivos temporales
+/.codex/
+/.agents/
+/.tools/
+/.tmp/
+/.idea/
+/.vscode/
+Thumbs.db
+.DS_Store
+*.tmp
+*.bak

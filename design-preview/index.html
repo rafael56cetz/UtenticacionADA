@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acceso · Preview UI</title>
+  <link rel="stylesheet" href="../public/assets/css/tokens.css">
+  <link rel="stylesheet" href="../public/assets/css/app.css">
+</head>
+<body>
+  <div style="padding: 24px; background: #fff; border-bottom: 1px solid #ddd;">
+    <h2>Visualizador de Componentes (Sin Servidor)</h2>
+    <p>Esta página sirve para comprobar los estilos y el layout responsivo sin depender de PHP.</p>
+  </div>
+
+  <div class="container">
+    <h3>Alertas</h3>
+    <div class="alert alert-error">Usuario no encontrado (Error 401)</div>
+    <div class="alert alert-info">Verificando dispositivo...</div>
+    <div class="alert alert-success">Autenticación correcta</div>
+
+    <h3>Tarjetas de Método (Grid)</h3>
+    <div class="method-grid">
+      <button class="method-card">
+        <svg class="method-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11h.01M15 11h.01M12 16c1.5 0 2.5-1 2.5-1H9.5s1 1 2.5 1z"/><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/></svg>
+        <div class="method-title">Reconocimiento facial</div>
+        <div class="method-desc">Utiliza la cámara de tu dispositivo</div>
+        <div class="method-status status-ready">Disponible</div>
+      </button>
+      <button class="method-card selected">
+        <svg class="method-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="5" r="2"/><circle cx="12" cy="5" r="2"/><circle cx="19" cy="5" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="5" cy="19" r="2"/><circle cx="12" cy="19" r="2"/><circle cx="19" cy="19" r="2"/></svg>
+        <div class="method-title">Patrón de acceso</div>
+        <div class="method-desc">Dibuja tu secuencia secreta</div>
+        <div class="method-status status-ready">Disponible</div>
+      </button>
+      <button class="method-card" disabled>
+        <svg class="method-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+        <div class="method-title">Huella digital</div>
+        <div class="method-desc">Requiere soporte del dispositivo</div>
+        <div class="method-status status-error">No disponible</div>
+      </button>
+    </div>
+
+    <h3>Formularios y Botones</h3>
+    <div class="card" style="max-width: 400px; margin-bottom: 24px;">
+      <div class="form-group">
+        <label class="form-label">Identificador</label>
+        <input type="text" class="form-input" value="12345678">
+      </div>
+      <div style="display:flex; gap: 8px;">
+        <button class="btn btn-secondary">Cancelar</button>
+        <button class="btn btn-primary"><div class="spinner"></div> Cargando</button>
+      </div>
+    </div>
+
+    <h3>Tabla de Usuarios</h3>
+    <div class="card">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr><th>Nombre</th><th>Rol</th><th>Estado</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Admin General</td><td><span class="badge badge-admin">Administrator</span></td><td><span class="badge badge-active">Activo</span></td></tr>
+            <tr><td>Gestor A</td><td><span class="badge badge-gestor">Gestor</span></td><td><span class="badge">Inactivo</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
