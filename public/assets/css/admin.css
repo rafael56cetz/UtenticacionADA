@@ -1,0 +1,85 @@
+/* ── Tabla de administración ─────────────────────────────────────────── */
+.container {
+  width: 100%;
+  max-width: 900px;
+  padding: var(--space-5) var(--space-4);
+  margin: 0 auto;
+}
+
+.table-responsive {
+  overflow-x: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+  background: var(--color-surface);
+}
+.table th {
+  background: var(--color-bg);
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-sec);
+  border-bottom: 1px solid var(--color-border);
+  white-space: nowrap;
+}
+.table td {
+  padding: var(--space-3) var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+}
+.table tbody tr:last-child td { border-bottom: none; }
+.table tbody tr:hover { background: var(--color-bg); }
+
+/* ── Badges de estado ────────────────────────────────────────────────── */
+.badge-active   { background: #D1F0E0; color: var(--color-success); }
+.badge-inactive { background: #F5F7FA; color: var(--color-text-sec); }
+.badge-pending  { background: #FFF3CD; color: #856404; }
+.badge-enrolled { background: #D1E4FD; color: var(--color-primary); }
+.badge-revoked  { background: #FDE8E7; color: var(--color-error); }
+
+/* ── Filtros ─────────────────────────────────────────────────────────── */
+.filters {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-4);
+  align-items: flex-end;
+}
+.filters .form-group { margin-bottom: 0; flex: 1; min-width: 140px; }
+.filters select.form-input { min-height: 44px; }
+
+/* ── Paginación ──────────────────────────────────────────────────────── */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+.pagination .btn {
+  min-height: 36px;
+  padding: 4px 14px;
+  font-size: var(--font-size-sm);
+}
+.pagination .page-info {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-sec);
+}
+
+/* ── Estado vacío ────────────────────────────────────────────────────── */
+.empty-state {
+  text-align: center;
+  padding: var(--space-6) var(--space-4);
+  color: var(--color-text-sec);
+}
+.empty-state p { margin-bottom: var(--space-4); }
+
+/* ── Intentos de acceso ──────────────────────────────────────────────── */
+.result-success { color: var(--color-success); font-weight: var(--font-weight-medium); }
+.result-failure { color: var(--color-error);   font-weight: var(--font-weight-medium); }
+.result-error   { color: var(--color-text-sec); }

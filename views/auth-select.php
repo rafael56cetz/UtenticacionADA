@@ -45,71 +45,12 @@
       <div style="display: flex; gap: var(--space-3); justify-content: flex-end;">
         <button type="submit" id="btn-next" class="btn btn-primary" disabled>Siguiente</button>
       </div>
-    </form>
+    </form><p style="margin-top:24px"><a href="/recovery">Acceso con contraseña de recuperación</a></p>
   </div>
 </div>
 
-<script type="module">
-  import { DeviceCapabilities } from '/assets/js/device-capabilities.js';
-  import { AuthFlow } from '/assets/js/auth-flow.js';
 
-  document.addEventListener('DOMContentLoaded', async () => {
-    const caps = await DeviceCapabilities.checkCapabilities();
-    
-    const updateStatus = (method, isAvailable, errorMsg = 'No disponible') => {
-      const card = document.querySelector(`.method-card[data-method="${method}"]`);
-      const status = document.getElementById(`status-${method}`);
-      if (isAvailable) {
-        card.disabled = false;
-        status.textContent = 'Disponible';
-        status.className = 'method-status status-ready';
-      } else {
-        card.disabled = true;
-        status.textContent = errorMsg;
-        status.className = 'method-status status-error';
-      }
-    };
-
-    updateStatus('face', caps.face, 'Cámara no detectada');
-    updateStatus('voice', caps.voice, 'Micrófono no detectado');
-    updateStatus('webauthn', caps.webauthn, 'Autenticador de plataforma no compatible');
-    
-    // Pattern is always available, already set in HTML
-    
-    const cards = document.querySelectorAll('.method-card');
-    const btnNext = document.getElementById('btn-next');
-    AuthFlow.initSelection(cards, btnNext);
-
-    document.getElementById('auth-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const identifier = document.getElementById('identifier').value;
-      if (!AuthFlow.currentMethod) return;
-      
-      btnNext.disabled = true;
-      btnNext.innerHTML = '<div class="spinner"></div> Procesando...';
-      const alertBox = document.getElementById('alert-container');
-      alertBox.classList.add('hidden');
-
-      const res = await AuthFlow.beginAuth(identifier, AuthFlow.currentMethod);
-      if (res.ok) {
-        // En un entorno real, redirigir a verify guardando los datos necesarios, o cargar la vista verify aquí.
-        // Asumiendo navegación SPA o guardar en sessionStorage para la siguiente vista.
-        sessionStorage.setItem('auth_challengeId', res.data.challengeId);
-        sessionStorage.setItem('auth_method', AuthFlow.currentMethod);
-        if (res.data.publicKeyOptions) {
-            sessionStorage.setItem('auth_pkOptions', JSON.stringify(res.data.publicKeyOptions));
-        }
-        window.location.href = '/verify';
-      } else {
-        alertBox.textContent = res.error?.message || 'Error al iniciar autenticación';
-        alertBox.classList.remove('hidden');
-        btnNext.disabled = false;
-        btnNext.textContent = 'Siguiente';
-      }
-    });
-  });
-</script>
 <?php
 $content = ob_get_clean();
-include 'layout.php';
+include __DIR__ . '/layout.php';
 ?>

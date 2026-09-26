@@ -1,64 +1,22 @@
+const base = document.querySelector('meta[name="app-base"]')?.content || '';
+export const url = path => base + path;
+let csrf = null, sessionRequest = null;
 export const ApiClient = {
-  csrfToken: null,
-  
   async getSession() {
-    try {
-      const res = await fetch('/api/session');
-      if (res.ok) {
-        const data = await res.json();
-        if (data.data?.csrfToken) {
-          this.csrfToken = data.data.csrfToken;
-        }
-        return data;
-      }
-      return null;
-    } catch (err) {
-      console.error('getSession error', err);
-      return null;
-    }
+    const response = await fetch(url('/api/session'), {credentials:'same-origin',cache:'no-store'});
+    const result = await response.json();
+    if(!response.ok || !result.ok) throw new Error(result.message || 'No se pudo cargar la sesión.');
+    csrf = result.data.csrfToken; return result.data;
   },
-
-  async request(endpoint, options = {}) {
-    const headers = { ...options.headers };
-    
-    // Auto set content type if not FormData
-    if (!(options.body instanceof FormData)) {
-      headers['Content-Type'] = headers['Content-Type'] || 'application/json';
-    }
-
-    if (this.csrfToken && options.method && options.method.toUpperCase() !== 'GET') {
-      headers['X-CSRF-Token'] = this.csrfToken;
-    }
-
-    const config = {
-      ...options,
-      headers,
-      credentials: 'same-origin' // Ensure cookies are sent
-    };
-
-    // Serialize JSON body
-    if (config.body && typeof config.body === 'object' && !(config.body instanceof FormData)) {
-      config.body = JSON.stringify(config.body);
-    }
-
+  async request(path, {method='GET',body,signal}={}) {
     try {
-      const response = await fetch(endpoint, config);
-      const isJson = response.headers.get('content-type')?.includes('application/json');
-      const data = isJson ? await response.json() : null;
-      
-      // Update CSRF token if provided in response data (optional standard)
-      if (data?.data?.csrfToken) {
-        this.csrfToken = data.data.csrfToken;
-      }
-
-      if (!response.ok) {
-        return { ok: false, error: data || { message: response.statusText }, status: response.status };
-      }
-
-      return { ok: true, data: data?.data, response };
-    } catch (err) {
-      console.error(`Network error on ${endpoint}`, err);
-      return { ok: false, error: { message: 'Error de red o servicio no disponible.' }, status: 0 };
-    }
+      if(method!=='GET' && !csrf) {sessionRequest ||= this.getSession().finally(()=>{sessionRequest=null;});await sessionRequest;}
+      const headers={Accept:'application/json'};
+      if(method!=='GET')headers['X-CSRF-Token']=csrf;
+      if(body!==undefined && !(body instanceof FormData)){headers['Content-Type']='application/json';body=JSON.stringify(body);}
+      const response=await fetch(url(path),{method,body,signal,headers,credentials:'same-origin',cache:'no-store'});
+      const json=await response.json();if(json.data?.csrfToken)csrf=json.data.csrfToken;
+      return {...json,ok:response.ok && json.ok===true,status:response.status};
+    }catch(error){return {ok:false,code:error.name==='AbortError'?'CANCELLED':'NETWORK_ERROR',message:error.name==='AbortError'?'Operación cancelada.':'No se pudo conectar con el servidor.',data:null,status:0};}
   }
 };

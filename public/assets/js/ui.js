@@ -1,0 +1,2 @@
+export function alertMessage(message,type='error') {const box=document.getElementById('alert-container');if(box){box.textContent=message;box.className=`alert alert-${type}`;box.setAttribute('role','status');box.setAttribute('aria-live','polite');}}
+export function navigate(path){if(typeof path!=='string'||!path.startsWith('/')||path.startsWith('//')||path.includes('\\'))throw new Error('Destino inválido.');const target=new URL(path,location.origin);if(target.origin!==location.origin)throw new Error('Destino inválido.');location.assign(target.href);}

@@ -18,5 +18,5 @@ ob_start();
 </div>
 <?php
 $content = ob_get_clean();
-include 'layout.php';
+include __DIR__ . '/layout.php';
 ?>

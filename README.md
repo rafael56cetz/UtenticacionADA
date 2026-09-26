@@ -1,61 +1,71 @@
 # Acceso · Autenticación multimodal
 
-Proyecto académico IAW-UNI2 ADA 1. Aplicación prevista en PHP sobre WAMP, con cuatro métodos de acceso: rostro, voz, WebAuthn y patrón. Roles: `Administrator` y `Gestor`.
+Proyecto académico IAW-UNI2 ADA 1: PHP/WAMP, MySQL, JavaScript nativo y un servicio biométrico local. Métodos: patrón, rostro, voz y WebAuthn. Roles: Administrator y Gestor.
 
-## Estado de esta primera entrega
+## Estado de la integración
 
-Se conserva el frontend recibido: vistas PHP, CSS y módulos JavaScript de captura e integración. **Todavía no se ha implementado el backend, la base de datos ni el servicio biométrico.** Descargar este repositorio no proporciona aún una aplicación de autenticación operativa.
+El backend real ya está implementado e integrado con las vistas existentes: usuarios, permisos, sesiones, retos, CSRF, límites de intentos, recuperación, patrón con hash y WebAuthn criptográfico. Python carga YuNet/SFace y SpeechBrain ECAPA; PHP conserva las plantillas cifradas. Se retiraron del recorrido las aprobaciones simuladas de la entrega inicial.
 
-La prioridad inicial es compartir una base común con el equipo. La implementación del backend seguirá [el encargo de Codex](04-prompt-para-codex.md) y [el contrato de integración](02-contrato-de-integracion.md), preservando el diseño existente.
+Comprobado en la laptop con WAMP: 40 pruebas PHP, 17 HTTP, 14 del servicio y 2 de concurrencia; además, 8 comprobaciones HTTPS, 7 del proxy y 7 de DNS. El titular confirmó acceso por **patrón, huella y rostro en el teléfono**. La voz funcionó en laptop y falló en Android: su diagnóstico es el siguiente trabajo. **Aún no es una entrega validada al 100 %:** faltan la reinstalación en otro equipo, la matriz completa de pruebas físicas y la calibración. Los umbrales biométricos son experimentales. No hay garantía de prueba de vida.
 
-## Descargar y colaborar
+**Para el compañero que recibe el proyecto:** empezar por el [manual de instalación en otra computadora y otra red](docs/manual-para-otro-equipo.md). Incluye base nueva, IP, proxy, certificado propio, enlace del teléfono y solución de problemas. El `.cer` de otra instalación no reemplaza el certificado correspondiente a tu nuevo servidor.
 
-En GitHub, seleccionar **Code → Download ZIP** para descargar una copia. Para trabajar con historial y recibir cambios, copiar la URL HTTPS de **Code** y ejecutar:
+## Probar en la instalación actual
+
+Abrir **https://acceso.ada.test:8443** en la instalación actual. La dirección anterior http://localhost:8088 redirige al sitio seguro. Mantener WAMP y el servicio Python activos. Para crear el primer administrador, desde PowerShell en la carpeta del proyecto:
 
 ```powershell
-git clone <URL-HTTPS-del-repositorio>
-cd UtenticacionADA
-git switch -c backend
+.\bin\create-admin.ps1
 ```
 
-Cada integrante puede crear su rama según el área: `backend`, `frontend`, `biometria` o `docs-qa`. Integrar los cambios mediante pull requests hacia `main`. Un repositorio público permite descargar sin invitación; para subir cambios directamente, el propietario debe agregar a cada integrante como colaborador. También se puede contribuir desde un fork.
+El comando pide una contraseña oculta; entrar luego mediante **Recuperación**, gestionar la cuenta y registrar sus modalidades. No hay contraseña universal. Si la cuenta ya existe, usarla: el comando de primera alta no reemplaza usuarios.
 
-Antes de comenzar una nueva rama desde `main`, actualizarla con `git pull --ff-only`. Coordinar cambios en el contrato y evitar editar simultáneamente los mismos archivos.
+Después de reiniciar la laptop, levantar Python en otra terminal:
 
-## Documentación de referencia
+```powershell
+.\biometric-service\start-service.ps1
+```
 
-- [Investigación, arquitectura y plan del equipo](01-investigacion-y-plan.md).
-- [Contrato de rutas, formatos y responsabilidades](02-contrato-de-integracion.md).
-- [Encargo de frontend](03-prompt-para-gemini.md).
-- [Encargo de backend, biometría e integración](04-prompt-para-codex.md).
-- [Revisión inicial y pendientes de integración](docs/estado-inicial.md).
+## Descargar
 
-## Archivos actuales
+```powershell
+git clone https://github.com/rafael56cetz/UtenticacionADA.git
+cd UtenticacionADA
+```
+
+Para una copia existente sin cambios locales: `git pull --ff-only`. Un ZIP es una copia de archivos, no conserva historial. El repositorio público permite descargar; subir cambios requiere ser colaborador o enviar un pull request desde un fork. Coordinar ramas y el contrato antes de editar archivos compartidos.
+
+Una descarga nueva requiere configuración, Composer, MySQL, Python y modelos; no contiene claves, base real ni pesos. Seguir el manual completo, no copiar el .env de un compañero.
+
+## Documentación
+
+- [Manual para otra computadora: base, red, proxy y certificado del teléfono](docs/manual-para-otro-equipo.md).
+- [Tareas, último avance y pendientes detallados](docs/tareas-del-equipo.md).
+- [Prompt para el integrante que continúa el trabajo](docs/prompt-companera.md).
+- [Instalación, arranque y primer administrador](docs/instalacion.md).
+- [HTTPS, hotspot y teléfono](docs/https-y-telefono.md).
+- [Pruebas ejecutadas y pendientes](docs/pruebas.md).
+- [Esquema, diccionario y diagrama](docs/base-de-datos.md).
+- [Contrato implementado y precisiones](docs/contrato-implementado.md).
+- [Dependencias y modelos](docs/dependencias-y-modelos.md).
+- [Encargo de backend](04-prompt-para-codex.md) y [contrato original](02-contrato-de-integracion.md).
+- [Revisión de la entrega del compañero](docs/revision-entrega-4.md).
+
+## Estructura
 
 ```text
-public/assets/css/   Estilos y tokens visuales
-public/assets/js/    Cliente API, capturas, patrón y WebAuthn
-views/              Plantillas de presentación PHP
-design-preview/     Catálogo visual estático, sin autenticación
-docs/               Estado y decisiones de integración
+public/               Única raíz pública; router y recursos del frontend
+views/                Plantillas fuera de la raíz pública
+src/                  Servicios PHP, sesiones, PDO y autorización
+bin/                  Configuración local, administrador y DNS de prueba
+database/schema.sql   Esquema MySQL
+biometric-service/    FastAPI, modelos descargables y pruebas
+config/               Ejemplos de VirtualHost
+tests/                Pruebas con datos sintéticos
+docs/                 Manuales y evidencias
+storage/private/      Datos privados locales; excluidos de Git
 ```
 
-Para revisar únicamente los componentes visuales, abrir `design-preview/index.html` en el navegador. Sus mensajes y datos son ejemplos estáticos; no comprueban identidad ni representan accesos reales.
+`design-preview/` es un catálogo estático anterior, no la aplicación autenticada. No servir directamente las vistas. El DocumentRoot de Apache debe apuntar a public/.
 
-La aplicación final deberá usar un VirtualHost cuyo `DocumentRoot` sea `public/`. Aún falta `public/index.php`; las vistas no deben publicarse directamente ni considerarse rutas protegidas hasta integrar el servidor.
-
-## Arquitectura acordada
-
-- PHP controla usuarios, permisos, sesiones, retos, límites y persistencia.
-- MySQL o MariaDB almacena los datos; la elección y las migraciones están pendientes.
-- Un servicio FastAPI escucha exclusivamente en `127.0.0.1`, autenticado para llamadas desde PHP.
-- OpenCV YuNet/SFace verifica rostro y SpeechBrain ECAPA-TDNN verifica hablante.
-- WebAuthn registra claves públicas; no almacena huellas. El dispositivo puede ofrecer PIN u otro desbloqueo.
-- El patrón tiene de 6 a 9 puntos distintos y se almacena mediante hash.
-- Laptop y teléfono necesitan un origen HTTPS estable y confiable para las pruebas finales.
-
-## Datos que no deben subirse
-
-No incluir contraseñas, claves, archivos `.env`, certificados privados, muestras de rostro/voz, plantillas biométricas ni copias reales de bases de datos. `.gitignore` excluye las ubicaciones previstas; revisar siempre `git diff --cached` antes de un commit. El esquema SQL y los ejemplos ficticios sí deben versionarse.
-
-Las dependencias, sus versiones y las licencias de los modelos se documentarán al instalarlas y probarlas. No se atribuye al equipo el entrenamiento de modelos externos. Esta entrega no incorpora todavía esas dependencias ni ofrece resultados de precisión biométrica.
+No subir .env, contraseñas, claves de CA/certificados, plantillas, muestras de rostro/voz ni copias reales de bases. Revisar el contenido preparado para cada commit; los archivos lock y el esquema sí deben versionarse.

@@ -1,4 +1,5 @@
 import { ApiClient } from './api-client.js';
+import { extension } from './auth-flow.js';
 
 export const AdminUsers = {
   async listUsers(page = 1) {
@@ -36,12 +37,13 @@ export const AdminUsers = {
     });
   },
 
-  async finishEnroll(id, method, payload, samples = []) {
+  async finishEnroll(id, method, challengeId, payload, samples = []) {
     const formData = new FormData();
+    formData.append('challengeId', challengeId);
     formData.append('payload', JSON.stringify(payload));
     
     samples.forEach((blob, index) => {
-      const ext = method === 'face' ? 'jpg' : (blob.type.includes('webm') ? 'webm' : 'wav');
+      const ext = extension(blob.type);
       formData.append('samples[]', blob, `sample_${index}.${ext}`);
     });
 
